@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { Exercise } from './interfaces/exercise.interface';
 import { v4 as uuid } from 'uuid';
+import { CreateExerciseDto, UpdateExerciseDto } from './dto';
 
 @Injectable()
 export class ExercisesService {
@@ -23,9 +24,9 @@ export class ExercisesService {
     },
   ];
 
-  findOne(id: string): Exercise | undefined {
+  findOneById(id: string): Exercise | undefined {
     const exercise = this.exercises.find((ex) => ex.id === id);
-    if (exercise) throw new NotFoundException();
+    if (!exercise) throw new NotFoundException();
     return exercise;
   }
 
@@ -33,34 +34,43 @@ export class ExercisesService {
     return this.exercises;
   }
 
-  create(exercise: Exercise): Exercise {
+  create(createExerciseDto: CreateExerciseDto): Exercise {
+    const newExercise: Exercise = {
+      id: uuid(),
+      ...createExerciseDto,
+    };
+
     const alreadyExist = this.exercises.find(
-      (ex) => ex.id === exercise.id || ex.name === exercise.name,
+      (ex) => ex.id === newExercise.id || ex.name === newExercise.name,
     );
 
     if (alreadyExist)
       throw new BadRequestException(`The ID or the Name already exists :/`);
-    this.exercises.push(exercise);
-    return exercise;
+    this.exercises.push(newExercise);
+    return newExercise;
   }
 
-  update(id: string, updates: { name: string }): Exercise | undefined {
-    const exercise = this.exercises.find((ex) => ex.id === id);
+  update(
+    id: string,
+    updateExerciseDto: UpdateExerciseDto,
+  ): Exercise | undefined {
+    const exercise = this.findOneById(id);
 
     if (!exercise) {
       throw new NotFoundException(`Exercise with ID ${id} not found`);
     }
 
-    this.exercises = this.exercises.map((ex) =>
-      ex.id === id ? Object.assign(exercise, updates) : ex,
+    this.exercises = this.exercises.map((ex: Exercise) =>
+      ex.id === id
+        ? Object.assign(exercise, { ...exercise, ...updateExerciseDto, id })
+        : ex,
     );
 
-    return this.exercises.find((ex) => ex.id === id);
+    return this.findOneById(id);
   }
 
   delete(id: string): void {
-    const ex = this.exercises.find((ex) => ex.id === id);
-    if (!ex) throw new NotFoundException(`Exercise with ID: ${id} not found`);
+    this.findOneById(id);
     this.exercises = this.exercises.filter((ex) => ex.id !== id);
   }
 }
