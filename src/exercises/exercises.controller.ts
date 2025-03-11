@@ -8,9 +8,9 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { ExercisesService } from './exercises.service';
-import { v4 as uuid } from 'uuid';
 
 @Controller('exercises')
 export class ExercisesController {
