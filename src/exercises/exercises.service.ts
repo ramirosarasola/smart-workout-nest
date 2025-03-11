@@ -33,7 +33,7 @@ export class ExercisesService {
     return this.exercises;
   }
 
-  create(exercise: { id: string; name: string }): Exercise {
+  create(exercise: Exercise): Exercise {
     const alreadyExist = this.exercises.find(
       (ex) => ex.id === exercise.id || ex.name === exercise.name,
     );
