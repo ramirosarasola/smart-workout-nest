@@ -3,28 +3,34 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Exercise } from './interfaces/exercise.interface';
 import { v4 as uuid } from 'uuid';
 import { CreateExerciseDto, UpdateExerciseDto } from './dto';
+import { Exercise } from './interfaces/exercise.interface';
 
 @Injectable()
 export class ExercisesService {
   private exercises: Exercise[] = [
     {
       id: uuid(),
-      name: 'Chest Press',
+      name: 'Pike Push Ups',
+      level: 'Begginer',
+      muscles: ['chest', 'shoulder', 'triceps'],
     },
     {
       id: uuid(),
       name: 'Pull Ups',
+      level: 'Begginer',
+      muscles: ['back'],
     },
     {
       id: uuid(),
       name: 'Push Ups',
+      level: 'Begginer',
+      muscles: ['chest', 'triceps'],
     },
   ];
 
-  findOneById(id: string): Exercise | undefined {
+  findOneById(id: string): Exercise {
     const exercise = this.exercises.find((ex) => ex.id === id);
     if (!exercise) throw new NotFoundException();
     return exercise;
@@ -54,19 +60,30 @@ export class ExercisesService {
     id: string,
     updateExerciseDto: UpdateExerciseDto,
   ): Exercise | undefined {
-    const exercise = this.findOneById(id);
+    let exerciseToUpdate: Exercise = this.findOneById(id);
 
-    if (!exercise) {
-      throw new NotFoundException(`Exercise with ID ${id} not found`);
+    if (!exerciseToUpdate) {
+      throw new NotFoundException();
     }
 
-    this.exercises = this.exercises.map((ex: Exercise) =>
-      ex.id === id
-        ? Object.assign(exercise, { ...exercise, ...updateExerciseDto, id })
-        : ex,
-    );
+    this.exercises = this.exercises
+      .map((ex) => {
+        if (ex.id === id) {
+          exerciseToUpdate = {
+            ...exerciseToUpdate,
+            ...updateExerciseDto,
+            id,
+            name: updateExerciseDto.name ?? exerciseToUpdate.name,
+            level: updateExerciseDto.level ?? exerciseToUpdate.level,
+            muscles: updateExerciseDto.muscles ?? exerciseToUpdate.muscles,
+          };
+          return exerciseToUpdate;
+        }
+        return ex;
+      })
+      .filter((ex): ex is Exercise => ex !== undefined);
 
-    return this.findOneById(id);
+    return exerciseToUpdate;
   }
 
   delete(id: string): void {

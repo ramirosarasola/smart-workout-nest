@@ -1,8 +1,14 @@
 // Los DTOs deben ser clases
 
-import { IsString } from 'class-validator';
+import { IsArray, IsString } from 'class-validator';
 
 export class CreateExerciseDto {
   @IsString()
   readonly name: string;
+
+  @IsString()
+  readonly level: string;
+
+  @IsArray()
+  readonly muscles: string[];
 }
