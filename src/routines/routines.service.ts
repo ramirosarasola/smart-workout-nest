@@ -43,21 +43,29 @@ export class RoutinesService {
   }
 
   async findOne(term: string): Promise<Routine> {
-    let routine: Routine | null;
+    const queryBuilder = this.routineRepository.createQueryBuilder('routine');
 
+    // Definir los campos por los que se puede buscar
+    const searchableFields = ['id', 'name', 'slug'];
+
+    // Verificar si el término es un UUID para filtrar por 'id'
     if (isUUID(term)) {
-      routine = await this.routineRepository.findOneBy({ id: term });
+      queryBuilder.where('routine.id = :id', { id: term });
     } else {
-      routine = await this.routineRepository
-        .createQueryBuilder('routine') // Se define un alias para la entidad
-        .where('LOWER(routine.name) = LOWER(:name) OR routine.slug =:slug', {
-          name: term.toLowerCase(),
-          slug: term.toLowerCase(),
-        }) // Se corrigen los parámetros
-        .getOne();
+      // Generar condiciones dinámicas para otros campos
+      const conditions = searchableFields
+        .filter((field) => field !== 'id') // Evitar duplicar búsqueda por 'id'
+        .map((field) => `LOWER(routine.${field}) = LOWER(:term)`)
+        .join(' OR ');
+
+      queryBuilder.where(conditions, { term: term.toLowerCase() });
     }
 
-    if (!routine) throw new NotFoundException(`The routine was not found.`);
+    const routine = await queryBuilder.getOne();
+
+    if (!routine) {
+      throw new NotFoundException(`The routine was not found.`);
+    }
 
     return routine;
   }
