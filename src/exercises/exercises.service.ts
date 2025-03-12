@@ -90,4 +90,8 @@ export class ExercisesService {
     this.findOneById(id);
     this.exercises = this.exercises.filter((ex) => ex.id !== id);
   }
+
+  fillCarsWithSeedData(exercises: Exercise[]) {
+    this.exercises = exercises;
+  }
 }

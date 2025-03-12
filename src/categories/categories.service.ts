@@ -119,8 +119,12 @@ export class CategoriesService {
     });
   }
 
-  remove(id: string) {
+  delete(id: string) {
     this.findOne(id);
     this.categories = this.categories.filter((category) => category.id !== id);
+  }
+
+  seedCategories(categories: Category[]) {
+    this.categories = categories;
   }
 }

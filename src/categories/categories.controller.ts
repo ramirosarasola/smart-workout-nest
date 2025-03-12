@@ -41,6 +41,6 @@ export class CategoriesController {
 
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.categoriesService.remove(id);
+    return this.categoriesService.delete(id);
   }
 }
