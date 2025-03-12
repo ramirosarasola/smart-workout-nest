@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ExercisesModule } from './exercises/exercises.module';
-import { CategoriesModule } from './categories/categories.module';
-import { SeedModule } from './seed/seed.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CategoriesModule } from './categories/categories.module';
+import { ExercisesModule } from './exercises/exercises.module';
+import { SeedModule } from './seed/seed.module';
+import { RoutinesModule } from './routines/routines.module';
 
 @Module({
   imports: [
@@ -23,8 +22,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     ExercisesModule,
     CategoriesModule,
     SeedModule,
+    RoutinesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
