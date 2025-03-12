@@ -1,4 +1,10 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Routine {
@@ -36,7 +42,7 @@ export class Routine {
   muscles: string[];
 
   @BeforeInsert()
-  validateSlugInser() {
+  validateSlugInsert() {
     if (!this.slug) {
       this.slug = this.name
         .toLowerCase()
@@ -45,6 +51,17 @@ export class Routine {
         .replaceAll("'", '');
     } else {
       this.slug = this.slug.toLowerCase();
+    }
+  }
+
+  @BeforeUpdate()
+  validateSlugUpdate() {
+    if (this.slug) {
+      this.slug = this.slug
+        .toLowerCase()
+        .replaceAll(' ', '-')
+        .replaceAll('"', '')
+        .replaceAll("'", '');
     }
   }
 }
