@@ -9,26 +9,7 @@ import { Exercise } from './interfaces/exercise.interface';
 
 @Injectable()
 export class ExercisesService {
-  private exercises: Exercise[] = [
-    {
-      id: uuid(),
-      name: 'Pike Push Ups',
-      level: 'Begginer',
-      muscles: ['chest', 'shoulder', 'triceps'],
-    },
-    {
-      id: uuid(),
-      name: 'Pull Ups',
-      level: 'Begginer',
-      muscles: ['back'],
-    },
-    {
-      id: uuid(),
-      name: 'Push Ups',
-      level: 'Begginer',
-      muscles: ['chest', 'triceps'],
-    },
-  ];
+  private exercises: Exercise[] = [];
 
   findOneById(id: string): Exercise {
     const exercise = this.exercises.find((ex) => ex.id === id);
@@ -91,7 +72,7 @@ export class ExercisesService {
     this.exercises = this.exercises.filter((ex) => ex.id !== id);
   }
 
-  fillCarsWithSeedData(exercises: Exercise[]) {
+  fillExercisesWithSeedData(exercises: Exercise[]) {
     this.exercises = exercises;
   }
 }
