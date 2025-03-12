@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateRoutineDto } from './dto/create-routine.dto';
@@ -7,23 +12,21 @@ import { Routine } from './entities/routine.entity';
 
 @Injectable()
 export class RoutinesService {
+  private readonly logger = new Logger('RoutineService');
+
   constructor(
     @InjectRepository(Routine)
     private readonly routineRepository: Repository<Routine>,
   ) {}
 
   async create(createRoutineDto: CreateRoutineDto) {
-    // console.log(createRoutineDto);
-    // return `This actions create a new routine`;
-
     try {
       // Esto solo lo crea de manera sincronica
       const routine = this.routineRepository.create(createRoutineDto);
       await this.routineRepository.save(routine);
       return routine;
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException('Ayuda!');
+      this.handleDBExceptions(error);
     }
   }
 
@@ -42,5 +45,19 @@ export class RoutinesService {
 
   remove(id: number) {
     return `This action removes a #${id} routine`;
+  }
+
+  private handleDBExceptions(error: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (error.code === '23505') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      this.logger.error(error.detail);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      throw new BadRequestException(error.detail);
+    }
+    this.logger.error(error);
+    throw new InternalServerErrorException(
+      'Unexpected Error. Check Server Logs!',
+    );
   }
 }

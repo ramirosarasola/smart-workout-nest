@@ -17,9 +17,7 @@ export class Routine {
   })
   estimatedMins: number;
 
-  @Column('text', {
-    unique: true,
-  })
+  @Column('text')
   name: string;
 
   @Column('text')
