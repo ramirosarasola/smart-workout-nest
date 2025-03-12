@@ -5,10 +5,16 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-# Smart Workout
+# Smart Workout API
 
-Populate DB
+Populate DB -> Mock Data in memory.
 
 ```
 http://localhost:3000/seed
+```
+
+1. Levantar la base de datos
+
+```
+docker-compose up -d
 ```
