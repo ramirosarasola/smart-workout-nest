@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -21,8 +22,9 @@ export class RoutinesService {
 
   async create(createRoutineDto: CreateRoutineDto) {
     try {
-      // Esto solo lo crea de manera sincronica
+      // Esto solo crea una instancia de nuestra entity de manera sincronica
       const routine = this.routineRepository.create(createRoutineDto);
+      // Aca lo guardamos en la base de datos.
       await this.routineRepository.save(routine);
       return routine;
     } catch (error) {
@@ -30,21 +32,28 @@ export class RoutinesService {
     }
   }
 
-  findAll() {
-    return `This action returns all routines`;
+  findAll(): Promise<Routine[]> {
+    return this.routineRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} routine`;
+  async findOne(id: string): Promise<Routine> {
+    const routine = await this.routineRepository.findOneBy({ id });
+
+    if (!routine)
+      throw new NotFoundException(`Routine with ID: ${id} not found.`);
+
+    return routine;
   }
 
-  update(id: number, updateRoutineDto: UpdateRoutineDto) {
+  update(id: string, updateRoutineDto: UpdateRoutineDto) {
     console.log(updateRoutineDto);
     return `This action updates a #${id} routine`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} routine`;
+  async delete(id: string): Promise<void> {
+    await this.findOne(id);
+    // analyze to use the remove method by passing the Routine.
+    await this.routineRepository.delete(id);
   }
 
   private handleDBExceptions(error: any) {
