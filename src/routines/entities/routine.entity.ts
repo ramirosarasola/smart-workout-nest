@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Routine {
@@ -34,4 +34,15 @@ export class Routine {
 
   // To refactor
   muscles: string[];
+
+  @BeforeInsert()
+  validateSlugInser() {
+    if (!this.slug) {
+      this.slug = this.name
+        .toLowerCase()
+        .replaceAll(' ', '-')
+        .replaceAll('"', '')
+        .replaceAll("'", '');
+    }
+  }
 }

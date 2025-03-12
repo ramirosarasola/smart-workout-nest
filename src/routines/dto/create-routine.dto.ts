@@ -11,6 +11,7 @@ export class CreateRoutineDto {
 
   @IsString()
   @MinLength(2)
+  @IsOptional()
   readonly slug: string;
 
   @IsString()
