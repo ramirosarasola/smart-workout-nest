@@ -5,12 +5,9 @@ export class Routine {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('text')
-  level: string;
-
   @Column({
-    type: 'decimal',
-    default: 0,
+    type: 'float',
+    default: 0.0,
   })
   intensity: number;
 
@@ -23,14 +20,20 @@ export class Routine {
   @Column('text', {
     unique: true,
   })
-  title: string;
+  name: string;
 
   @Column('text')
   description: string;
+
+  @Column('text')
+  level: string;
 
   @Column({
     type: 'text',
     unique: true,
   })
   slug: string;
+
+  // To refactor
+  muscles: string[];
 }
