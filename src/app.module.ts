@@ -5,6 +5,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { ExercisesModule } from './exercises/exercises.module';
 import { SeedModule } from './seed/seed.module';
 import { RoutinesModule } from './routines/routines.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { RoutinesModule } from './routines/routines.module';
     CategoriesModule,
     SeedModule,
     RoutinesModule,
+    CommonModule,
   ],
 })
 export class AppModule {}

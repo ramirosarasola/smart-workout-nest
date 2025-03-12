@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
 import { Routine } from './entities/routine.entity';
+import { PaginationDto } from '../common/dtos/pagination.dto';
 
 @Injectable()
 export class RoutinesService {
@@ -32,8 +33,12 @@ export class RoutinesService {
     }
   }
 
-  findAll(): Promise<Routine[]> {
-    return this.routineRepository.find();
+  findAll(paginationDto: PaginationDto): Promise<Routine[]> {
+    const { limit = 10, offset = 0 } = paginationDto;
+    return this.routineRepository.find({
+      take: limit,
+      skip: offset,
+    });
   }
 
   async findOne(id: string): Promise<Routine> {

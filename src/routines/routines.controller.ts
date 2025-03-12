@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import { RoutinesService } from './routines.service';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Controller('routines')
 export class RoutinesController {
@@ -22,8 +24,9 @@ export class RoutinesController {
   }
 
   @Get()
-  findAll() {
-    return this.routinesService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    console.log(paginationDto);
+    return this.routinesService.findAll(paginationDto);
   }
 
   @Get(':id')
