@@ -11,6 +11,7 @@ import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
 import { Routine } from './entities/routine.entity';
 import { PaginationDto } from '../common/dtos/pagination.dto';
+import { validate as isUUID } from 'uuid';
 
 @Injectable()
 export class RoutinesService {
@@ -41,11 +42,22 @@ export class RoutinesService {
     });
   }
 
-  async findOne(id: string): Promise<Routine> {
-    const routine = await this.routineRepository.findOneBy({ id });
+  async findOne(term: string): Promise<Routine> {
+    let routine: Routine | null;
 
-    if (!routine)
-      throw new NotFoundException(`Routine with ID: ${id} not found.`);
+    if (isUUID(term)) {
+      routine = await this.routineRepository.findOneBy({ id: term });
+    } else {
+      routine = await this.routineRepository
+        .createQueryBuilder('routine') // Se define un alias para la entidad
+        .where('LOWER(routine.name) = LOWER(:name) OR routine.slug =:slug', {
+          name: term.toLowerCase(),
+          slug: term.toLowerCase(),
+        }) // Se corrigen los parámetros
+        .getOne();
+    }
+
+    if (!routine) throw new NotFoundException(`The routine was not found.`);
 
     return routine;
   }

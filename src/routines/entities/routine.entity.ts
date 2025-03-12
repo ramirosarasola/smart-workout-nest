@@ -43,6 +43,8 @@ export class Routine {
         .replaceAll(' ', '-')
         .replaceAll('"', '')
         .replaceAll("'", '');
+    } else {
+      this.slug = this.slug.toLowerCase();
     }
   }
 }

@@ -1,4 +1,10 @@
-import { IsIn, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsIn,
+  IsLowercase,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class CreateRoutineDto {
   @IsString()
@@ -12,6 +18,7 @@ export class CreateRoutineDto {
   @IsString()
   @MinLength(2)
   @IsOptional()
+  @IsLowercase()
   readonly slug: string;
 
   @IsString()

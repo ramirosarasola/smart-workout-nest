@@ -29,9 +29,9 @@ export class RoutinesController {
     return this.routinesService.findAll(paginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.routinesService.findOne(id);
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.routinesService.findOne(term);
   }
 
   @Patch(':id')
