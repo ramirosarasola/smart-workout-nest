@@ -17,5 +17,6 @@ import { Exercise } from 'src/exercises/entities/exercise.entity';
       Exercise,
     ]),
   ],
+  exports: [RoutinesService],
 })
 export class RoutinesModule {}

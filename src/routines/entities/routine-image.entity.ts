@@ -9,6 +9,8 @@ export class RoutineImage {
   @Column('text')
   url: string;
 
-  @ManyToOne(() => Routine, (routine) => routine.images)
+  @ManyToOne(() => Routine, (routine) => routine.images, {
+    onDelete: 'CASCADE',
+  })
   routine: Routine;
 }

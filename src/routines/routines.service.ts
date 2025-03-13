@@ -246,6 +246,7 @@ export class RoutinesService {
     try {
       return await query.delete().where({}).execute();
     } catch (error) {
+      this.logger.error(error);
       this.handleDBExceptions(error);
     }
   }

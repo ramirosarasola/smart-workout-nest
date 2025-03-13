@@ -1,4 +1,5 @@
 import { Category } from 'src/categories/entities/category.entity';
+import { Exercise } from 'src/exercises/entities/exercise.entity';
 import { v4 as uuid } from 'uuid';
 
 export const CATEGORIES_SEED: Category[] = [
@@ -72,3 +73,5 @@ export const CATEGORIES_SEED: Category[] = [
     createdAt: Date.now(),
   },
 ];
+
+export const EXERCISES_SEED: Exercise[] = [];

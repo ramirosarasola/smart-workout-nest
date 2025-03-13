@@ -1,6 +1,8 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,6 +15,8 @@ import { Exercise } from './entities/exercise.entity';
 
 @Injectable()
 export class ExercisesService {
+  private readonly logger: Logger = new Logger('ExerciseService');
+
   constructor(
     @InjectRepository(Exercise)
     private readonly exerciseRepository: Repository<Exercise>,
@@ -92,5 +96,28 @@ export class ExercisesService {
 
   remove(id: string) {
     return `This action removes a #${id} exercise`;
+  }
+
+  private handleDBExceptions(error: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (error.code === '23505') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      this.logger.error(error.detail);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      throw new BadRequestException(error.detail);
+    }
+    throw new InternalServerErrorException(
+      'Unexpected Error. Check Server Logs!',
+    );
+  }
+
+  async deleteAllRoutines() {
+    const query = this.exerciseRepository.createQueryBuilder('exercise');
+
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 }
