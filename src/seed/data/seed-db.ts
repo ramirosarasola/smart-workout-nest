@@ -1,5 +1,6 @@
 import { Category } from 'src/categories/entities/category.entity';
-import { ICreateExerciseReq } from 'src/exercises/interfaces/exercise.dto';
+import { CreateExerciseDto } from 'src/exercises/dto/create-exercise.dto';
+import { CreateMuscleDto } from 'src/muscles/dto/create-muscle.dto';
 import { v4 as uuid } from 'uuid';
 
 export const CATEGORIES_SEED: Category[] = [
@@ -74,7 +75,7 @@ export const CATEGORIES_SEED: Category[] = [
   },
 ];
 
-export const EXERCISES_SEED: ICreateExerciseReq[] = [
+export const EXERCISES_SEED: CreateExerciseDto[] = [
   {
     name: 'Pull-Up',
     description:
@@ -243,4 +244,19 @@ export const EXERCISES_SEED: ICreateExerciseReq[] = [
       },
     ],
   },
+];
+
+export const MUSCLES_SEED: CreateMuscleDto[] = [
+  { name: 'Quadriceps' },
+  { name: 'Glutes' },
+  { name: 'Hamstrings' },
+  { name: 'Pectorals' },
+  { name: 'Triceps' },
+  { name: 'Deltoids' },
+  { name: 'Shoulders' },
+  { name: 'Upper Chest' },
+  { name: 'Core' },
+  { name: 'Latissimus Dorsi' },
+  { name: 'Biceps Brachii' },
+  { name: 'Forearms' },
 ];

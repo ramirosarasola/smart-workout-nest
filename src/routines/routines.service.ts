@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { CreateRoutineDto } from './dto/create-routine.dto';
@@ -43,42 +43,45 @@ export class RoutinesService {
         ...routineDetails
       } = createRoutineDto;
 
+      // Validamos que todos los ejercicios existen antes de guardar la rutina
+      const exerciseIds = exercises.map((e) => e.exerciseId);
+      const foundExercises = await this.exerciseRepository.find({
+        where: { id: In(exerciseIds) }, // Buscar todos los ejercicios con los IDs dados
+      });
+
+      if (foundExercises.length !== exerciseIds.length) {
+        const missingIds = exerciseIds.filter(
+          (id) => !foundExercises.some((ex) => ex.id === id),
+        );
+        throw new Error(
+          `Exercises with IDs ${missingIds.join(', ')} not found`,
+        );
+      }
+
       // Creamos la rutina con los detalles proporcionados
       const routine: Routine = this.routineRepository.create({
         ...routineDetails,
         images: images.map((img) =>
           this.routineImageRepository.create({ url: img }),
         ),
-        routineExercises: [], // Inicializamos vacío, los ejercicios se agregan después
       });
 
       // Guardamos la rutina en la base de datos
       const savedRoutine = await this.routineRepository.save(routine);
 
-      // Procesamos los ejercicios para relacionarlos con la rutina
-      const routineExercises = await Promise.all(
-        exercises.map(async (exerciseData) => {
-          // Buscamos el ejercicio por ID
-          const exercise = await this.exerciseRepository.findOne({
-            where: { id: exerciseData.exerciseId },
-          });
-
-          if (!exercise) {
-            throw new Error(
-              `Exercise with ID ${exerciseData.exerciseId} not found`,
-            );
-          }
-
-          // Creamos la relación entre la rutina y el ejercicio
-          return this.routineExerciseRepository.create({
-            routine: savedRoutine, // Relacionamos la rutina guardada
-            exercise: exercise, // Relacionamos el ejercicio completo
-            sets: exerciseData.sets,
-            reps: exerciseData.reps,
-            restTime: exerciseData.restTime,
-          });
-        }),
-      );
+      // Creamos la relación entre la rutina y los ejercicios
+      const routineExercises = exercises.map((exerciseData) => {
+        const exercise = foundExercises.find(
+          (ex) => ex.id === exerciseData.exerciseId,
+        );
+        return this.routineExerciseRepository.create({
+          routine: savedRoutine,
+          exercise: exercise,
+          sets: exerciseData.sets,
+          reps: exerciseData.reps,
+          restTime: exerciseData.restTime,
+        });
+      });
 
       // Guardamos las relaciones entre la rutina y los ejercicios
       const savedRoutineExercises =
@@ -98,6 +101,7 @@ export class RoutinesService {
         images,
       };
     } catch (error) {
+      this.logger.error(error);
       this.handleDBExceptions(error);
     }
   }
@@ -234,15 +238,16 @@ export class RoutinesService {
       this.logger.error(error.detail);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       throw new BadRequestException(error.detail);
+    } else {
+      throw new InternalServerErrorException(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        error.message || 'Unexpected Error. Check Server Logs!',
+      );
     }
-    throw new InternalServerErrorException(
-      'Unexpected Error. Check Server Logs!',
-    );
   }
 
   async deleteAllRoutines() {
     const query = this.routineRepository.createQueryBuilder('routine');
-
     try {
       return await query.delete().where({}).execute();
     } catch (error) {

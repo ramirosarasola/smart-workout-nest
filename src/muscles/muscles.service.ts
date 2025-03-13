@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateMuscleDto } from './dto/create-muscle.dto';
@@ -12,6 +13,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class MusclesService {
+  private readonly logger = new Logger('MuscleService');
+
   constructor(
     @InjectRepository(Muscle)
     private readonly muscleRepository: Repository<Muscle>,
@@ -56,5 +59,16 @@ export class MusclesService {
     throw new InternalServerErrorException(
       'Unexpected Error. Check Server Logs!',
     );
+  }
+
+  async deleteAllMuscles() {
+    const query = this.muscleRepository.createQueryBuilder('muscle');
+
+    try {
+      await query.delete().where({}).execute();
+    } catch (error) {
+      this.logger.error(error);
+      this.handleDBExceptions(error);
+    }
   }
 }

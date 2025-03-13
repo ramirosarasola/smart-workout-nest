@@ -38,7 +38,13 @@ export class ExercisesService {
       });
 
       if (muscles.length !== createExerciseDto.muscleActivations.length) {
-        throw new NotFoundException(`Some muscles does not exists on DB`);
+        const musclesMissing = createExerciseDto.muscleActivations
+          .map((m) => m.muscleName)
+          .filter((m) => !muscles.find((muscle) => muscle.name === m));
+
+        throw new NotFoundException(
+          `Some muscles does not exists on DB: ${musclesMissing.join(', ')}`,
+        );
       }
 
       // Crear el ejercicio
@@ -111,12 +117,13 @@ export class ExercisesService {
     );
   }
 
-  async deleteAllRoutines() {
+  async deleteAllExercises() {
     const query = this.exerciseRepository.createQueryBuilder('exercise');
 
     try {
       return await query.delete().where({}).execute();
     } catch (error) {
+      this.logger.error(error);
       this.handleDBExceptions(error);
     }
   }
