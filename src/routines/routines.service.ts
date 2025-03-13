@@ -70,9 +70,24 @@ export class RoutinesService {
     return routine;
   }
 
-  update(id: string, updateRoutineDto: UpdateRoutineDto) {
-    console.log(updateRoutineDto);
-    return `This action updates a #${id} routine`;
+  async update(
+    id: string,
+    updateRoutineDto: UpdateRoutineDto,
+  ): Promise<Routine> {
+    const routine = await this.routineRepository.preload({
+      id,
+      ...updateRoutineDto,
+    });
+
+    if (!routine)
+      throw new NotFoundException(`The routine with ID: "${id}" not found.`);
+
+    try {
+      await this.routineRepository.save(routine);
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+    return routine;
   }
 
   async delete(id: string): Promise<void> {
