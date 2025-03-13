@@ -70,12 +70,19 @@ export class ExercisesService {
     }
   }
 
-  findAll() {
-    return `This action returns all exercises`;
+  async findAll(): Promise<Exercise[]> {
+    return await this.exerciseRepository.find();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} exercise`;
+  async findOne(id: string): Promise<Exercise> {
+    const exercise: Exercise | null = await this.exerciseRepository.findOneBy({
+      id,
+    });
+
+    if (!exercise)
+      throw new NotFoundException(`The exercise with ID: '${id}' not found.`);
+
+    return exercise;
   }
 
   update(id: string, updateExerciseDto: UpdateExerciseDto) {
