@@ -7,10 +7,15 @@ export class RoutineExercise {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Routine, (routine) => routine.routineExercises)
+  @ManyToOne(() => Routine, (routine) => routine.routineExercises, {
+    onDelete: 'CASCADE',
+  })
   routine: Routine;
 
-  @ManyToOne(() => Exercise, (exercise) => exercise.routineExercises)
+  @ManyToOne(() => Exercise, (exercise) => exercise.routineExercises, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   exercise: Exercise;
 
   @Column()

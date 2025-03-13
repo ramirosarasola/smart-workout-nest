@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { CreateRoutineDto } from './dto/create-routine.dto';
@@ -32,6 +32,7 @@ export class RoutinesService {
     private readonly routineExerciseRepository: Repository<RoutineExercise>,
     @InjectRepository(Exercise)
     private readonly exerciseRepository: Repository<Exercise>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createRoutineDto: CreateRoutineDto) {
@@ -149,7 +150,7 @@ export class RoutinesService {
     updateRoutineDto: UpdateRoutineDto,
   ): Promise<Routine | undefined> {
     const {
-      images = [],
+      images,
       exercises = [], // Aquí estamos recibiendo los ejercicios con los detalles de sets, reps, restTime
       ...routineDetails
     } = updateRoutineDto;
@@ -158,17 +159,28 @@ export class RoutinesService {
     const routine = await this.routineRepository.preload({
       id,
       ...routineDetails,
-      images: [], // Inicializamos las imágenes aquí (las gestionamos por separado)
     });
 
     if (!routine)
       throw new NotFoundException(`The routine with ID: "${id}" not found.`);
 
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
       // Actualizamos las imágenes asociadas a la rutina (si es necesario)
-      routine.images = images.map((img) =>
-        this.routineImageRepository.create({ url: img }),
-      );
+
+      if (images) {
+        await queryRunner.manager.delete(RoutineImage, { routine: { id } });
+
+        routine.images = images.map((img) =>
+          this.routineImageRepository.create({ url: img }),
+        );
+      } else {
+        const { images } = await this.findOne(id);
+        routine.images = images;
+      }
 
       // Primero, eliminamos las relaciones existentes de ejercicios
       await this.routineExerciseRepository.delete({ routine: { id } });
@@ -188,10 +200,14 @@ export class RoutinesService {
       await this.routineExerciseRepository.save(routineExercises);
 
       // Finalmente, guardamos la rutina con sus nuevas relaciones
-      await this.routineRepository.save(routine);
+      await queryRunner.manager.save(routine);
 
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
       return routine;
     } catch (error) {
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
       this.handleDBExceptions(error);
     }
   }
@@ -204,8 +220,6 @@ export class RoutinesService {
 
   async findOnePlain(term: string): Promise<FindOneRoutineResponse> {
     const routine = await this.findOne(term);
-
-    console.log(routine);
 
     return {
       ...routine,
@@ -224,5 +238,15 @@ export class RoutinesService {
     throw new InternalServerErrorException(
       'Unexpected Error. Check Server Logs!',
     );
+  }
+
+  async deleteAllRoutines() {
+    const query = this.routineRepository.createQueryBuilder('routine');
+
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 }

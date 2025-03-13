@@ -54,12 +54,14 @@ export class Routine {
     (routineExercise) => routineExercise.routine,
     {
       cascade: true,
+      eager: true,
     },
   )
   routineExercises: RoutineExercise[];
 
   @OneToMany(() => RoutineImage, (routineImage) => routineImage.routine, {
     cascade: true,
+    eager: true,
   })
   images: RoutineImage[];
 
