@@ -31,7 +31,7 @@ export class RoutinesController {
 
   @Get(':term')
   findOne(@Param('term') term: string) {
-    return this.routinesService.findOne(term);
+    return this.routinesService.findOnePlain(term);
   }
 
   @Patch(':id')

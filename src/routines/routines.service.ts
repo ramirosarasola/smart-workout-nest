@@ -7,11 +7,15 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { validate as isUUID } from 'uuid';
+import { PaginationDto } from '../common/dtos/pagination.dto';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
-import { Routine } from './entities/routine.entity';
-import { PaginationDto } from '../common/dtos/pagination.dto';
-import { validate as isUUID } from 'uuid';
+import { Routine, RoutineImage } from './entities';
+import {
+  FindAllRoutineResponse,
+  FindOneRoutineResponse,
+} from './interfaces/routine.interface';
 
 @Injectable()
 export class RoutinesService {
@@ -20,30 +24,54 @@ export class RoutinesService {
   constructor(
     @InjectRepository(Routine)
     private readonly routineRepository: Repository<Routine>,
+    @InjectRepository(RoutineImage)
+    private readonly routineImageRepository: Repository<RoutineImage>,
   ) {}
 
   async create(createRoutineDto: CreateRoutineDto) {
     try {
+      const { images = [], ...routineDetails } = createRoutineDto;
+
       // Esto solo crea una instancia de nuestra entity de manera sincronica
-      const routine = this.routineRepository.create(createRoutineDto);
+      const routine: Routine = this.routineRepository.create({
+        ...routineDetails,
+        images: images.map((img) =>
+          this.routineImageRepository.create({ url: img }),
+        ),
+      });
       // Aca lo guardamos en la base de datos.
       await this.routineRepository.save(routine);
-      return routine;
+      return {
+        ...routine,
+        images,
+      };
     } catch (error) {
       this.handleDBExceptions(error);
     }
   }
 
-  findAll(paginationDto: PaginationDto): Promise<Routine[]> {
+  async findAll(
+    paginationDto: PaginationDto,
+  ): Promise<FindAllRoutineResponse[]> {
     const { limit = 10, offset = 0 } = paginationDto;
-    return this.routineRepository.find({
+    const routines = await this.routineRepository.find({
       take: limit,
       skip: offset,
+      relations: {
+        images: true,
+      },
     });
+
+    return routines.map((routine) => ({
+      ...routine,
+      images: routine.images?.map((img) => img.url) || [],
+    }));
   }
 
   async findOne(term: string): Promise<Routine> {
-    const queryBuilder = this.routineRepository.createQueryBuilder('routine');
+    const queryBuilder = this.routineRepository
+      .createQueryBuilder('routine')
+      .leftJoinAndSelect('routine.images', 'images');
 
     // Definir los campos por los que se puede buscar
     const searchableFields = ['id', 'name', 'slug'];
@@ -77,6 +105,7 @@ export class RoutinesService {
     const routine = await this.routineRepository.preload({
       id,
       ...updateRoutineDto,
+      images: [],
     });
 
     if (!routine)
@@ -96,6 +125,8 @@ export class RoutinesService {
     await this.routineRepository.delete(id);
   }
 
+  // EXTRAS
+
   private handleDBExceptions(error: any) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (error.code === '23505') {
@@ -108,5 +139,14 @@ export class RoutinesService {
     throw new InternalServerErrorException(
       'Unexpected Error. Check Server Logs!',
     );
+  }
+
+  async findOnePlain(term: string): Promise<FindOneRoutineResponse> {
+    const routine = await this.findOne(term);
+
+    return {
+      ...routine,
+      images: routine.images?.map((img) => img.url) || [],
+    };
   }
 }

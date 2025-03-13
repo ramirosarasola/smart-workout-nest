@@ -39,4 +39,10 @@ export class CreateRoutineDto {
   @IsOptional() // Va a ser opcional, ya que podemos obtener su categoria segun las reps y sets realizados.
   @ApiProperty()
   readonly types: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional() // Va a ser opcional, ya que podemos obtener su categoria segun las reps y sets realizados.
+  @ApiProperty()
+  readonly images: string[];
 }
