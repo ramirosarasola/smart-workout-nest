@@ -125,7 +125,14 @@ export class RoutinesService {
     await this.routineRepository.delete(id);
   }
 
-  // EXTRAS
+  async findOnePlain(term: string): Promise<FindOneRoutineResponse> {
+    const routine = await this.findOne(term);
+
+    return {
+      ...routine,
+      images: routine.images?.map((img) => img.url) || [],
+    };
+  }
 
   private handleDBExceptions(error: any) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -135,18 +142,8 @@ export class RoutinesService {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       throw new BadRequestException(error.detail);
     }
-    this.logger.error(error);
     throw new InternalServerErrorException(
       'Unexpected Error. Check Server Logs!',
     );
-  }
-
-  async findOnePlain(term: string): Promise<FindOneRoutineResponse> {
-    const routine = await this.findOne(term);
-
-    return {
-      ...routine,
-      images: routine.images?.map((img) => img.url) || [],
-    };
   }
 }

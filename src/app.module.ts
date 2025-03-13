@@ -2,9 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriesModule } from './categories/categories.module';
-import { SeedModule } from './seed/seed.module';
-import { RoutinesModule } from './routines/routines.module';
 import { CommonModule } from './common/common.module';
+import { ExerciseMuscleModule } from './exercise-muscle/exercise-muscle.module';
+import { ExercisesModule } from './exercises/exercises.module';
+import { MusclesModule } from './muscles/muscles.module';
+import { RoutinesModule } from './routines/routines.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -23,6 +26,9 @@ import { CommonModule } from './common/common.module';
     SeedModule,
     RoutinesModule,
     CommonModule,
+    ExercisesModule,
+    MusclesModule,
+    ExerciseMuscleModule,
   ],
 })
 export class AppModule {}
