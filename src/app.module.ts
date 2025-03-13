@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriesModule } from './categories/categories.module';
-import { ExercisesModule } from './exercises/exercises.module';
 import { SeedModule } from './seed/seed.module';
 import { RoutinesModule } from './routines/routines.module';
 import { CommonModule } from './common/common.module';
@@ -20,7 +19,6 @@ import { CommonModule } from './common/common.module';
       autoLoadEntities: true,
       synchronize: true, // -> En production no derberiamos tenerlo en TRUE - Usar migraciones
     }),
-    ExercisesModule,
     CategoriesModule,
     SeedModule,
     RoutinesModule,
