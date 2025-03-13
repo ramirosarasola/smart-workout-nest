@@ -1,5 +1,5 @@
 import { Category } from 'src/categories/entities/category.entity';
-import { Exercise } from 'src/exercises/entities/exercise.entity';
+import { ICreateExerciseReq } from 'src/exercises/interfaces/exercise.dto';
 import { v4 as uuid } from 'uuid';
 
 export const CATEGORIES_SEED: Category[] = [
@@ -74,4 +74,173 @@ export const CATEGORIES_SEED: Category[] = [
   },
 ];
 
-export const EXERCISES_SEED: Exercise[] = [];
+export const EXERCISES_SEED: ICreateExerciseReq[] = [
+  {
+    name: 'Pull-Up',
+    description:
+      'A bodyweight exercise that primarily targets the upper back and biceps.',
+    difficultyLevel: 'Intermediate',
+    relativeLoad: 1.0,
+    stabilityRequirement: 6,
+    rangeOfMotion: 8,
+    technicalDemand: 7,
+    muscleActivations: [
+      {
+        muscleName: 'Latissimus Dorsi',
+        activationLevel: 9,
+      },
+      {
+        muscleName: 'Biceps Brachii',
+        activationLevel: 7,
+      },
+      {
+        muscleName: 'Forearms',
+        activationLevel: 6,
+      },
+    ],
+  },
+  {
+    name: 'Squat',
+    description:
+      'A fundamental lower body exercise that targets the quadriceps, glutes, and hamstrings.',
+    difficultyLevel: 'Beginner',
+    relativeLoad: 0.4,
+    stabilityRequirement: 7,
+    rangeOfMotion: 9,
+    technicalDemand: 6,
+    muscleActivations: [
+      {
+        muscleName: 'Quadriceps',
+        activationLevel: 9,
+      },
+      {
+        muscleName: 'Glutes',
+        activationLevel: 8,
+      },
+      {
+        muscleName: 'Hamstrings',
+        activationLevel: 7,
+      },
+    ],
+  },
+  {
+    name: 'Bench Press',
+    description:
+      'A classic strength exercise that primarily targets the chest, shoulders, and triceps.',
+    difficultyLevel: 'Intermediate',
+    relativeLoad: 0.6,
+    stabilityRequirement: 3,
+    rangeOfMotion: 7,
+    technicalDemand: 6,
+    muscleActivations: [
+      {
+        muscleName: 'Pectorals',
+        activationLevel: 9,
+      },
+      {
+        muscleName: 'Triceps',
+        activationLevel: 7,
+      },
+      {
+        muscleName: 'Deltoids',
+        activationLevel: 6,
+      },
+    ],
+  },
+  {
+    name: 'Dips',
+    description:
+      'A bodyweight exercise that heavily engages the triceps, chest, and shoulders.',
+    difficultyLevel: 'Advanced',
+    relativeLoad: 1.0,
+    stabilityRequirement: 5,
+    rangeOfMotion: 8,
+    technicalDemand: 8,
+    muscleActivations: [
+      {
+        muscleName: 'Triceps',
+        activationLevel: 9,
+      },
+      {
+        muscleName: 'Pectorals',
+        activationLevel: 8,
+      },
+      {
+        muscleName: 'Shoulders',
+        activationLevel: 7,
+      },
+    ],
+  },
+  {
+    name: 'Lunges',
+    description:
+      'A lower body exercise that enhances balance and targets multiple muscles.',
+    difficultyLevel: 'Beginner',
+    relativeLoad: 0.3,
+    stabilityRequirement: 8,
+    rangeOfMotion: 9,
+    technicalDemand: 5,
+    muscleActivations: [
+      {
+        muscleName: 'Quadriceps',
+        activationLevel: 8,
+      },
+      {
+        muscleName: 'Glutes',
+        activationLevel: 8,
+      },
+      {
+        muscleName: 'Hamstrings',
+        activationLevel: 7,
+      },
+    ],
+  },
+  {
+    name: 'Overhead Press',
+    description:
+      'A shoulder exercise that also engages the triceps and upper chest.',
+    difficultyLevel: 'Intermediate',
+    relativeLoad: 0.5,
+    stabilityRequirement: 4,
+    rangeOfMotion: 7,
+    technicalDemand: 7,
+    muscleActivations: [
+      {
+        muscleName: 'Deltoids',
+        activationLevel: 9,
+      },
+      {
+        muscleName: 'Triceps',
+        activationLevel: 7,
+      },
+      {
+        muscleName: 'Upper Chest',
+        activationLevel: 6,
+      },
+    ],
+  },
+  {
+    name: 'Plank',
+    description:
+      'An isometric core exercise that builds endurance and stability.',
+    difficultyLevel: 'Beginner',
+    relativeLoad: 0.0,
+    stabilityRequirement: 10,
+    rangeOfMotion: 1,
+    technicalDemand: 5,
+    muscleActivations: [
+      {
+        muscleName: 'Core',
+        activationLevel: 9,
+      },
+      {
+        muscleName: 'Shoulders',
+        activationLevel: 6,
+      },
+      {
+        muscleName: 'Glutes',
+        activationLevel: 5,
+      },
+    ],
+  },
+];
