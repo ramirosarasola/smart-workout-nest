@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { RoutineExercise } from './routine-exercise.entity';
 import { RoutineImage } from './routine-image.entity';
 
 @Entity()
@@ -48,10 +49,19 @@ export class Routine {
   types: string[];
 
   // Relations
+  @OneToMany(
+    () => RoutineExercise,
+    (routineExercise) => routineExercise.routine,
+    {
+      cascade: true,
+    },
+  )
+  routineExercises: RoutineExercise[];
+
   @OneToMany(() => RoutineImage, (routineImage) => routineImage.routine, {
     cascade: true,
   })
-  images?: RoutineImage[];
+  images: RoutineImage[];
 
   @BeforeInsert()
   validateSlugInsert() {

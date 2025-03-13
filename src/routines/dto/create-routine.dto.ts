@@ -1,12 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsIn,
   IsLowercase,
+  IsNumber,
   IsOptional,
   IsString,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
+
+class RoutineExerciseDto {
+  @IsString()
+  exerciseId: string;
+
+  @IsNumber()
+  sets: number;
+
+  @IsNumber()
+  reps: number;
+
+  @IsNumber()
+  restTime: number;
+}
 
 export class CreateRoutineDto {
   @IsString()
@@ -45,4 +62,9 @@ export class CreateRoutineDto {
   @IsOptional() // Va a ser opcional, ya que podemos obtener su categoria segun las reps y sets realizados.
   @ApiProperty()
   readonly images: string[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => RoutineExerciseDto)
+  readonly exercises: RoutineExerciseDto[];
 }

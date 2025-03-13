@@ -1,5 +1,6 @@
 import { ExerciseMuscle } from 'src/exercise-muscle/entities/exercise-muscle.entity';
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { RoutineExercise } from 'src/routines/entities/routine-exercise.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Exercise {
@@ -35,4 +36,10 @@ export class Exercise {
     },
   )
   muscleActivations: ExerciseMuscle[];
+
+  @OneToMany(
+    () => RoutineExercise,
+    (routineExercise) => routineExercise.exercise,
+  )
+  routineExercises: RoutineExercise[];
 }
