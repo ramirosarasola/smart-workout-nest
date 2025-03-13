@@ -3,8 +3,10 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { RoutineImage } from './routine-image.entity';
 
 @Entity()
 export class Routine {
@@ -44,6 +46,12 @@ export class Routine {
     default: [],
   })
   types: string[];
+
+  // Relations
+  @OneToMany(() => RoutineImage, (routineImage) => routineImage.routine, {
+    cascade: true,
+  })
+  images?: RoutineImage[];
 
   @BeforeInsert()
   validateSlugInsert() {
