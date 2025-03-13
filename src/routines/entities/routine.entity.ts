@@ -18,7 +18,7 @@ export class Routine {
   intensity: number;
 
   @Column({
-    type: 'numeric',
+    type: 'smallint',
     default: 0,
   })
   estimatedMins: number;
@@ -38,8 +38,12 @@ export class Routine {
   })
   slug: string;
 
-  // To refactor
-  muscles: string[];
+  @Column({
+    type: 'text',
+    array: true,
+    default: [],
+  })
+  types: string[];
 
   @BeforeInsert()
   validateSlugInsert() {

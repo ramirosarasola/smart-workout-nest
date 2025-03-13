@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsArray,
   IsIn,
   IsLowercase,
   IsOptional,
@@ -18,6 +19,7 @@ export class CreateRoutineDto {
   @ApiProperty()
   readonly description: string;
 
+  // Optionals
   @IsString()
   @MinLength(2)
   @IsOptional()
@@ -32,8 +34,9 @@ export class CreateRoutineDto {
   @ApiProperty()
   readonly level?: string;
 
-  // @IsArray()
-  // @IsString({ each: true })
-  // @IsIn(['begginer', 'intermediate', 'advanced'])
-  // readonly focusMuscleGroup: string[];
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional() // Va a ser opcional, ya que podemos obtener su categoria segun las reps y sets realizados.
+  @ApiProperty()
+  readonly types: string[];
 }
