@@ -21,7 +21,6 @@ export class FilesService {
       size: string | number;
       path: string;
     }[] = [];
-    console.log(files.file);
 
     const { file: fileArr } = files;
 

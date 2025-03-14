@@ -11,10 +11,7 @@ declare namespace Storage {
     type: 'file';
     toBuffer: () => Promise<Buffer>;
     file: BusboyFileStream;
-    // fieldname: string;
-    // filename: string;
     encoding: string;
-    // mimetype: string;
     fields: MultipartFields;
   }
 }
