@@ -11,9 +11,9 @@ import { Muscle } from 'src/muscles/entities/muscle.entity';
 import { Repository } from 'typeorm';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
+import { ExerciseImage } from './entities/exercise-image.entity';
 import { Exercise } from './entities/exercise.entity';
 import { FindOneExerciseResponse } from './interfaces/exercise.interface';
-import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class ExercisesService {
@@ -26,11 +26,13 @@ export class ExercisesService {
     private readonly muscleRepository: Repository<Muscle>,
     @InjectRepository(ExerciseMuscle)
     private readonly exerciseMuscleRepository: Repository<ExerciseMuscle>,
-    private readonly fileService: FilesService,
+    @InjectRepository(ExerciseImage)
+    private readonly exerciseImageRespository: Repository<ExerciseImage>,
   ) {}
 
   async create(
     createExerciseDto: CreateExerciseDto,
+    res?: { secureUrl: string }[],
   ): Promise<Exercise | undefined> {
     try {
       // Buscar los músculos en la base de datos
@@ -60,6 +62,18 @@ export class ExercisesService {
         rangeOfMotion: createExerciseDto.rangeOfMotion,
         technicalDemand: createExerciseDto.technicalDemand,
       });
+
+      const images: ExerciseImage[] = [];
+      if (res) {
+        res.forEach((image) => {
+          images.push(
+            this.exerciseImageRespository.create({ url: image.secureUrl }),
+          );
+        });
+      }
+
+      newExercise.images = images;
+
       // Guardar el ejercicio en la base de datos
       const savedExercise = await this.exerciseRepository.save(newExercise);
 

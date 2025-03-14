@@ -28,7 +28,7 @@ export class ExercisesController {
   ) {}
 
   @Post('no-images')
-  create(@Body() createExerciseDto: CreateExerciseDto) {
+  createNoImages(@Body() createExerciseDto: CreateExerciseDto) {
     return this.exercisesService.create(createExerciseDto);
   }
 
@@ -39,7 +39,7 @@ export class ExercisesController {
       maxFileSize: 20 * 1024 * 1024, // 20MB
     }),
   )
-  async upload(
+  async create(
     @Files() files: Record<string, Storage.MultipartFile[]>,
     @Body('data') data: string,
   ) {
@@ -51,7 +51,7 @@ export class ExercisesController {
 
     // Valido que los datos sean del tipo CreateExerciseDto
     const exerciseDto = plainToInstance(CreateExerciseDto, exerciseData);
-    // 🔹 2. Validar el DTO manualmente
+    // 🔹 2. Validar el DTO
     const errors = validateSync(exerciseDto);
     if (errors.length > 0) {
       console.log(errors);
@@ -75,6 +75,7 @@ export class ExercisesController {
 
     const exercise = await this.exercisesService.create(
       exerciseData as CreateExerciseDto,
+      res,
     );
 
     return {
