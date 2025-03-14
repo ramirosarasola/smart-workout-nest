@@ -12,5 +12,11 @@ export const getFileFromPart = async (
     filename: part.filename,
     mimetype: part.mimetype,
     fieldname: part.fieldname,
+    // ponele
+    type: 'file',
+    toBuffer: () => Promise.resolve(buffer),
+    file: part.file,
+    encoding: part.encoding,
+    fields: part.fields,
   };
 };
