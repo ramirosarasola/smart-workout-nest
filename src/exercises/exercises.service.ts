@@ -13,6 +13,7 @@ import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise } from './entities/exercise.entity';
 import { FindOneExerciseResponse } from './interfaces/exercise.interface';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class ExercisesService {
@@ -25,6 +26,7 @@ export class ExercisesService {
     private readonly muscleRepository: Repository<Muscle>,
     @InjectRepository(ExerciseMuscle)
     private readonly exerciseMuscleRepository: Repository<ExerciseMuscle>,
+    private readonly fileService: FilesService,
   ) {}
 
   async create(
@@ -48,6 +50,12 @@ export class ExercisesService {
         );
       }
 
+      if (createExerciseDto.images.length === 0) {
+        throw new BadRequestException(
+          'At least one image is required. We strictly recommend at least one video also.',
+        );
+      }
+
       // Crear el ejercicio
       const newExercise = this.exerciseRepository.create({
         name: createExerciseDto.name,
@@ -58,7 +66,6 @@ export class ExercisesService {
         rangeOfMotion: createExerciseDto.rangeOfMotion,
         technicalDemand: createExerciseDto.technicalDemand,
       });
-
       // Guardar el ejercicio en la base de datos
       const savedExercise = await this.exerciseRepository.save(newExercise);
 

@@ -6,18 +6,65 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  BadRequestException,
 } from '@nestjs/common';
 import { ExercisesService } from './exercises.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
+import { MultipartInterceptor } from 'src/files/interceptor/multipart.interceptor';
+import { Files } from 'src/files/decorator/files.decorator';
+import { FilesService, UploadFileResponse } from 'src/files/files.service';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('exercises')
 export class ExercisesController {
-  constructor(private readonly exercisesService: ExercisesService) {}
+  constructor(
+    private readonly exercisesService: ExercisesService,
+    private readonly filesService: FilesService,
+    private readonly configService: ConfigService,
+  ) {}
 
-  @Post()
+  @Post('no-images')
   create(@Body() createExerciseDto: CreateExerciseDto) {
     return this.exercisesService.create(createExerciseDto);
+  }
+
+  @Post()
+  @UseInterceptors(
+    MultipartInterceptor({
+      fileType: /^(image\/(jpeg|png|gif)|video\/(mp4|webm|x-msvideo))$/,
+      maxFileSize: 20 * 1024 * 1024, // 20MB
+    }),
+  )
+  async upload(
+    @Files() files: Record<string, Storage.MultipartFile[]>,
+    @Body('data') data: string,
+  ) {
+    // Valido que si se envio un body estra
+    if (typeof data !== 'string') {
+      throw new BadRequestException('Invalid data format. Must be a string.');
+    }
+    const exerciseData: unknown = JSON.parse(data); // Convertimos string a JSON
+
+    // or any other storage
+    const savedFiles: UploadFileResponse[] = await this.filesService.uploadFile(
+      files,
+      'exercises',
+    );
+    // return with secure url
+    const res = savedFiles.map((file: UploadFileResponse) => ({
+      secureUrl: `${this.configService.get('HOST_API')}/files/exercises/${file.filename}`,
+    }));
+
+    const exercise = await this.exercisesService.create(
+      exerciseData as CreateExerciseDto,
+    );
+
+    return {
+      ...exercise,
+      images: res,
+    };
   }
 
   @Get()

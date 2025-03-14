@@ -17,7 +17,7 @@ import { dirname } from 'path';
 import { existsSync } from 'fs';
 
 interface UploadDto {
-  name: string;
+  body: any;
 }
 
 @Controller('files')
@@ -62,16 +62,24 @@ export class FilesController {
     @Body() body: UploadDto,
     @Param('resource') resource: string,
   ) {
-    console.log(body);
+    // Valido que si se envio un body estra
+    if (JSON.stringify(body) !== '{}') {
+      if (typeof body.body !== 'string') {
+        throw new BadRequestException('Invalid body format');
+      }
+      const parsedBody = JSON.parse(body.body) as Record<string, any>;
+      console.log(parsedBody);
+    }
+
+    // or any other storage
     const savedFiles: UploadFileResponse[] = await this.filesService.uploadFile(
       files,
       resource,
-    ); // or any other storage
+    );
     // return with secure url
     const res = savedFiles.map((file: UploadFileResponse) => ({
       secureUrl: `${this.configService.get('HOST_API')}/files/${resource}/${file.filename}`,
     }));
-    console.log(res);
     return res;
   }
 }

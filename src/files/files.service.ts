@@ -1,5 +1,9 @@
 import { MultipartFile } from '@fastify/multipart';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { extname, join } from 'path';
 
@@ -32,13 +36,18 @@ export class FilesService {
       path: string;
     }[] = [];
 
+    // VALIDAR QUE SE ENVIARON ARCHIVOS
+    if (!files.file) {
+      throw new BadRequestException('No files uploaded.');
+    }
+
     const { file: fileArr } = files;
-    this.uploadDir = join(this.uploadDir, resource);
+    const resourcePath = join(this.uploadDir, resource);
 
     for (const file of fileArr) {
       const buffer = await file.toBuffer();
       const uniqueName = crypto.randomUUID() + extname(file.filename);
-      const filePath = join(this.uploadDir, uniqueName);
+      const filePath = join(resourcePath, uniqueName);
 
       writeFileSync(filePath, buffer);
 
