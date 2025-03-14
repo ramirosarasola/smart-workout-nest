@@ -12,7 +12,7 @@ export interface UploadFileResponse {
 
 @Injectable()
 export class FilesService {
-  private uploadDir = join(__dirname, '../../static/routines');
+  private uploadDir = join(__dirname, '../../static');
 
   constructor() {
     // Crear el directorio si no existe
@@ -23,6 +23,7 @@ export class FilesService {
 
   async uploadFile(
     files: Record<string, MultipartFile[]>,
+    resource: string,
   ): Promise<UploadFileResponse[]> {
     const savedFiles: {
       filename: string;
@@ -32,6 +33,7 @@ export class FilesService {
     }[] = [];
 
     const { file: fileArr } = files;
+    this.uploadDir = join(this.uploadDir, resource);
 
     for (const file of fileArr) {
       const buffer = await file.toBuffer();
@@ -51,11 +53,13 @@ export class FilesService {
     return savedFiles;
   }
 
-  getStaticRoutineImages(imageName: string) {
-    const path = join(__dirname, '../../static/routines', imageName);
+  getStaticRoutineImages(imageName: string, resource: string) {
+    const path = join(__dirname, `../../static/${resource}`, imageName);
 
     if (!existsSync(path)) {
-      throw new NotFoundException(`No routine found with image ${imageName}`);
+      throw new NotFoundException(
+        `No ${resource} found with image ${imageName}`,
+      );
     }
     return path;
   }

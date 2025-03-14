@@ -27,24 +27,30 @@ export class FilesController {
     private readonly configService: ConfigService,
   ) {}
 
-  @Get('routines/:fileName')
+  @Get(':resource/:fileName')
   findStaticResource(
+    @Param('resource') resource: string,
     @Param('fileName') fileName: string,
     @Res() reply: FastifyReply,
   ) {
-    const filePath = this.filesService.getStaticRoutineImages(fileName);
+    const filePath = this.filesService.getStaticRoutineImages(
+      fileName,
+      resource,
+    );
 
     console.log('Ruta del archivo:', filePath);
     console.log('Nombre del archivo:', fileName);
 
     if (!existsSync(filePath)) {
-      throw new BadRequestException(`No routine found with image ${fileName}`);
+      throw new BadRequestException(
+        `No ${resource} found with image ${fileName}`,
+      );
     }
 
     return reply.sendFile(fileName, dirname(filePath));
   }
 
-  @Post('routines')
+  @Post('upload/:resource')
   @UseInterceptors(
     MultipartInterceptor({
       fileType: /^(image\/(jpeg|png|gif)|video\/(mp4|webm|x-msvideo))$/,
@@ -54,13 +60,16 @@ export class FilesController {
   async upload(
     @Files() files: Record<string, Storage.MultipartFile[]>,
     @Body() body: UploadDto,
+    @Param('resource') resource: string,
   ) {
     console.log(body);
-    const savedFiles: UploadFileResponse[] =
-      await this.filesService.uploadFile(files); // or any other storage
+    const savedFiles: UploadFileResponse[] = await this.filesService.uploadFile(
+      files,
+      resource,
+    ); // or any other storage
     // return with secure url
     const res = savedFiles.map((file: UploadFileResponse) => ({
-      secureUrl: `${this.configService.get('HOST_API')}/files/routines/${file.filename}`,
+      secureUrl: `${this.configService.get('HOST_API')}/files/${resource}/${file.filename}`,
     }));
     console.log(res);
     return res;
