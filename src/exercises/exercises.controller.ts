@@ -16,6 +16,8 @@ import { MultipartInterceptor } from 'src/files/interceptor/multipart.intercepto
 import { Files } from 'src/files/decorator/files.decorator';
 import { FilesService, UploadFileResponse } from 'src/files/files.service';
 import { ConfigService } from '@nestjs/config';
+import { plainToInstance } from 'class-transformer';
+import { validateSync } from 'class-validator';
 
 @Controller('exercises')
 export class ExercisesController {
@@ -46,6 +48,20 @@ export class ExercisesController {
       throw new BadRequestException('Invalid data format. Must be a string.');
     }
     const exerciseData: unknown = JSON.parse(data); // Convertimos string a JSON
+
+    // Valido que los datos sean del tipo CreateExerciseDto
+    const exerciseDto = plainToInstance(CreateExerciseDto, exerciseData);
+    // 🔹 2. Validar el DTO manualmente
+    const errors = validateSync(exerciseDto);
+    if (errors.length > 0) {
+      console.log(errors);
+      const errorMessages: string[][] = [];
+      errors.forEach((error) => {
+        if (error && error.constraints)
+          errorMessages.push(Object.values(error.constraints));
+      });
+      throw new BadRequestException(errorMessages);
+    }
 
     // or any other storage
     const savedFiles: UploadFileResponse[] = await this.filesService.uploadFile(

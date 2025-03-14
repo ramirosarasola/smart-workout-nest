@@ -50,12 +50,6 @@ export class ExercisesService {
         );
       }
 
-      if (createExerciseDto.images.length === 0) {
-        throw new BadRequestException(
-          'At least one image is required. We strictly recommend at least one video also.',
-        );
-      }
-
       // Crear el ejercicio
       const newExercise = this.exerciseRepository.create({
         name: createExerciseDto.name,

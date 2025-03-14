@@ -52,10 +52,6 @@ export class CreateExerciseDto {
   @Max(10)
   readonly technicalDemand: number;
 
-  @IsString({ each: true })
-  @IsArray()
-  readonly images: string[];
-
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => MuscleActivationDto)
