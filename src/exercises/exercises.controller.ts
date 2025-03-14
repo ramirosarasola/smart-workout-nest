@@ -1,23 +1,23 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseInterceptors,
   BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ExercisesService } from './exercises.service';
-import { CreateExerciseDto } from './dto/create-exercise.dto';
-import { UpdateExerciseDto } from './dto/update-exercise.dto';
-import { MultipartInterceptor } from 'src/files/interceptor/multipart.interceptor';
-import { Files } from 'src/files/decorator/files.decorator';
-import { FilesService, UploadFileResponse } from 'src/files/files.service';
 import { ConfigService } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
+import { Files } from 'src/files/decorator/files.decorator';
+import { FilesService, UploadFileResponse } from 'src/files/files.service';
+import { MultipartInterceptor } from 'src/files/interceptor/multipart.interceptor';
+import { CreateExerciseDto } from './dto/create-exercise.dto';
+import { UpdateExerciseDto } from './dto/update-exercise.dto';
+import { ExercisesService } from './exercises.service';
 
 @Controller('exercises')
 export class ExercisesController {
