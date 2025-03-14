@@ -1,11 +1,12 @@
+import multipart from '@fastify/multipart';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -20,6 +21,13 @@ async function bootstrap() {
       forbidNonWhitelisted: true, // Retorna 400 si se envia una property que no es esperada.
     }),
   );
+
+  // Registra el plugin de multipart
+  await app.register(multipart, {
+    limits: {
+      fileSize: 20 * 1024 * 1024, // 20MB
+    },
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Smart Workouts')
