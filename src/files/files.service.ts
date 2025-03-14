@@ -1,20 +1,29 @@
 import { MultipartFile } from '@fastify/multipart';
-import { Injectable } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { extname, join } from 'path';
+
+export interface UploadFileResponse {
+  filename: string;
+  mimetype: string;
+  size: string | number;
+  path: string;
+}
 
 @Injectable()
 export class FilesService {
-  private uploadDir = path.join(__dirname, '../../static/exercises');
+  private uploadDir = join(__dirname, '../../static/routines');
 
   constructor() {
     // Crear el directorio si no existe
-    if (!fs.existsSync(this.uploadDir)) {
-      fs.mkdirSync(this.uploadDir, { recursive: true });
+    if (!existsSync(this.uploadDir)) {
+      mkdirSync(this.uploadDir, { recursive: true });
     }
   }
 
-  async uploadFile(files: Record<string, MultipartFile[]>) {
+  async uploadFile(
+    files: Record<string, MultipartFile[]>,
+  ): Promise<UploadFileResponse[]> {
     const savedFiles: {
       filename: string;
       mimetype: string;
@@ -26,10 +35,10 @@ export class FilesService {
 
     for (const file of fileArr) {
       const buffer = await file.toBuffer();
-      const uniqueName = crypto.randomUUID() + path.extname(file.filename);
-      const filePath = path.join(this.uploadDir, uniqueName);
+      const uniqueName = crypto.randomUUID() + extname(file.filename);
+      const filePath = join(this.uploadDir, uniqueName);
 
-      fs.writeFileSync(filePath, buffer);
+      writeFileSync(filePath, buffer);
 
       savedFiles.push({
         filename: uniqueName,
@@ -40,5 +49,14 @@ export class FilesService {
     }
 
     return savedFiles;
+  }
+
+  getStaticRoutineImages(imageName: string) {
+    const path = join(__dirname, '../../static/routines', imageName);
+
+    if (!existsSync(path)) {
+      throw new NotFoundException(`No routine found with image ${imageName}`);
+    }
+    return path;
   }
 }

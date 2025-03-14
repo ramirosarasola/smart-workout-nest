@@ -1,11 +1,13 @@
 import multipart from '@fastify/multipart';
-import { ValidationPipe } from '@nestjs/common';
+import fastifyStatic from '@fastify/static';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { join } from 'path';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -13,6 +15,8 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
+
+  const logger = new Logger('Bootstrap');
 
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(
@@ -29,6 +33,11 @@ async function bootstrap() {
     },
   });
 
+  await app.register(fastifyStatic, {
+    root: join(__dirname, '..', 'static'), // Directorio donde están las imágenes
+    prefix: '/files', // Prefijo para acceder a los archivos
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Smart Workouts')
     .setDescription('The smart-workout API description')
@@ -38,6 +47,7 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT);
+  logger.log(`Application is running on PORT: ${process.env.PORT} 🚀`);
 }
 void bootstrap();
