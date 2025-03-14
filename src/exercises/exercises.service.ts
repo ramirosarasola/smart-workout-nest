@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise } from './entities/exercise.entity';
+import { FindOneExerciseResponse } from './interfaces/exercise.interface';
 
 @Injectable()
 export class ExercisesService {
@@ -84,15 +85,25 @@ export class ExercisesService {
     return await this.exerciseRepository.find();
   }
 
-  async findOne(id: string): Promise<Exercise> {
-    const exercise: Exercise | null = await this.exerciseRepository.findOneBy({
-      id,
-    });
+  async findOne(id: string): Promise<FindOneExerciseResponse> {
+    const exercise: Exercise | null = await this.exerciseRepository
+      .createQueryBuilder('exercise')
+      .leftJoinAndSelect('exercise.images', 'images')
+      .leftJoinAndSelect('exercise.muscleActivations', 'muscles')
+      .leftJoinAndSelect('muscles.muscle', 'muscle')
+      .where('exercise.id = :id', { id })
+      .getOne();
 
     if (!exercise)
       throw new NotFoundException(`The exercise with ID: '${id}' not found.`);
 
-    return exercise;
+    return {
+      ...exercise,
+      muscleActivations: exercise.muscleActivations.map((m) => ({
+        muscleName: m.muscle.name,
+        activationLevel: m.activationLevel,
+      })),
+    };
   }
 
   update(id: string, updateExerciseDto: UpdateExerciseDto) {

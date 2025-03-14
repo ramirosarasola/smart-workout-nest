@@ -1,6 +1,7 @@
 import { ExerciseMuscle } from 'src/exercise-muscle/entities/exercise-muscle.entity';
 import { RoutineExercise } from 'src/routines/entities/routine-exercise.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { ExerciseImage } from './exercise-image.entity';
 
 @Entity()
 export class Exercise {
@@ -27,6 +28,11 @@ export class Exercise {
 
   @Column('smallint')
   technicalDemand: number;
+
+  @OneToMany(() => ExerciseImage, (exerciseImage) => exerciseImage.exercise, {
+    cascade: true,
+  })
+  images: ExerciseImage[];
 
   @OneToMany(
     () => ExerciseMuscle,
