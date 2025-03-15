@@ -1,0 +1,120 @@
+{
+  "id": "86815efb-901d-4fc3-a9f5-50f87a79a963",
+  "intensity": 0,
+  "estimatedMins": 0,
+  "name": "RAMIRO SARASOLA",
+  "description": "Rutina de calistenia adaptada con ejercicios de gimnasio.",
+  "level": "begginer",
+  "slug": "ramiro-sarasola",
+  "types": ["strength", "endurance"],
+  "routineExercises": [
+    {
+      "id": "a86da436-63a9-43fc-978e-1b514c909dfe",
+      "exercise": {
+        "id": "66a23e36-bb53-4944-9caf-3b4456b76a0d",
+        "name": "NUEVO",
+        "description": "A bodyweight exercise that primarily targets the upper back and biceps.",
+        "difficultyLevel": "Intermediate",
+        "relativeLoad": 1,
+        "stabilityRequirement": 4,
+        "rangeOfMotion": 8,
+        "technicalDemand": 7,
+        "images": [
+          {
+            "id": 1,
+            "url": "http://localhost:3000/api/v1/files/exercises/c4c60abd-e992-4136-ab9b-5db7be3418ba.mp4"
+          }
+        ]
+      },
+      "sets": 4,
+      "reps": 10,
+      "restTime": 60
+    },
+    {
+      "id": "ca4b0573-6a7d-4d89-8582-1c5588b469f4",
+      "exercise": {
+        "id": "6c4c4c3a-468b-43ca-b12b-89aa06a75c13",
+        "name": "Squat",
+        "description": "A fundamental lower body exercise that targets the quadriceps, glutes, and hamstrings.",
+        "difficultyLevel": "Beginner",
+        "relativeLoad": 0.4,
+        "stabilityRequirement": 7,
+        "rangeOfMotion": 9,
+        "technicalDemand": 6,
+        "images": []
+      },
+      "sets": 3,
+      "reps": 15,
+      "restTime": 60
+    },
+    {
+      "id": "b37efb72-e2a7-481f-9905-afd5fc290ffe",
+      "exercise": {
+        "id": "32d7299f-2304-4228-bf46-20b6df853e40",
+        "name": "Dips",
+        "description": "A bodyweight exercise that heavily engages the triceps, chest, and shoulders.",
+        "difficultyLevel": "Advanced",
+        "relativeLoad": 1,
+        "stabilityRequirement": 5,
+        "rangeOfMotion": 8,
+        "technicalDemand": 8,
+        "images": []
+      },
+      "sets": 3,
+      "reps": 8,
+      "restTime": 60
+    },
+    {
+      "id": "544460f2-e676-45a1-99b1-56e495585870",
+      "exercise": {
+        "id": "02cd6871-a0fd-413a-894b-4d24f4efa626",
+        "name": "Lunges",
+        "description": "A lower body exercise that enhances balance and targets multiple muscles.",
+        "difficultyLevel": "Beginner",
+        "relativeLoad": 0.3,
+        "stabilityRequirement": 8,
+        "rangeOfMotion": 9,
+        "technicalDemand": 5,
+        "images": []
+      },
+      "sets": 3,
+      "reps": 8,
+      "restTime": 60
+    },
+    {
+      "id": "decd06c6-df33-4344-968e-0f17e9c709ab",
+      "exercise": {
+        "id": "905ccab7-ca81-4cba-9c97-a6852354709f",
+        "name": "Plank",
+        "description": "An isometric core exercise that builds endurance and stability.",
+        "difficultyLevel": "Beginner",
+        "relativeLoad": 0,
+        "stabilityRequirement": 10,
+        "rangeOfMotion": 1,
+        "technicalDemand": 5,
+        "images": []
+      },
+      "sets": 3,
+      "reps": 8,
+      "restTime": 60
+    },
+    {
+      "id": "7d9254da-7e65-4827-aa9b-b7774bbb8087",
+      "exercise": {
+        "id": "86c8cf56-26e6-404f-83de-6aa0e226b87a",
+        "name": "Pull-Up",
+        "description": "A bodyweight exercise that primarily targets the upper back and biceps.",
+        "difficultyLevel": "Intermediate",
+        "relativeLoad": 1,
+        "stabilityRequirement": 6,
+        "rangeOfMotion": 8,
+        "technicalDemand": 7,
+        "images": []
+      },
+      "sets": 3,
+      "reps": 8,
+      "restTime": 60
+    }
+  ],
+  "images": ["https://image1.com", "https://image2.com"]
+}

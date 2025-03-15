@@ -129,7 +129,8 @@ export class RoutinesService {
       .createQueryBuilder('routine')
       .leftJoinAndSelect('routine.images', 'images') // Cargar imágenes
       .leftJoinAndSelect('routine.routineExercises', 'routineExercises') // Relación intermedia
-      .leftJoinAndSelect('routineExercises.exercise', 'exercise'); // Cargar ejercicios correctamente
+      .leftJoinAndSelect('routineExercises.exercise', 'exercise') // Cargar ejercicios correctamente
+      .leftJoinAndSelect('exercise.images', 'exerciseImages'); // agregar las images de los exercicios
 
     if (isUUID(term)) {
       queryBuilder.where('routine.id = :id', { id: term });
