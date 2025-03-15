@@ -9,6 +9,7 @@ import { MusclesModule } from './muscles/muscles.module';
 import { RoutinesModule } from './routines/routines.module';
 import { SeedModule } from './seed/seed.module';
 import { FilesModule } from './files/files.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { FilesModule } from './files/files.module';
     MusclesModule,
     ExerciseMuscleModule,
     FilesModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
