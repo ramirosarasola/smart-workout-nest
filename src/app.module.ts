@@ -24,6 +24,9 @@ import { WorkoutsModule } from './workouts/workouts.module';
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,
       synchronize: true, // -> En production no derberiamos tenerlo en TRUE - Usar migraciones
+      ssl: {
+        rejectUnauthorized: false,
+      },
     }),
     CategoriesModule,
     SeedModule,
