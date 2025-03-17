@@ -6,6 +6,8 @@ import { CreateUserDto, LoginUserDto } from './dto';
 import { RoleProtected } from './decorators/role-protected.decorator';
 import { ValidRoles } from './interfaces';
 import { UserRoleGuard } from './guards/user-role.guard';
+import { Auth } from './decorators/auth.decorator';
+import { User } from './entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -39,6 +41,16 @@ export class AuthController {
       ok: true,
       message: 'Hola mundo Privado',
       userEmail,
+    };
+  }
+
+  @Get('private3')
+  @Auth(ValidRoles.admin)
+  testingPrivateRoute3(@GetUser() user: User) {
+    return {
+      ok: true,
+      message: 'Hola mundo Privado',
+      user,
     };
   }
 }
