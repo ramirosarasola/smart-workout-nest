@@ -36,8 +36,10 @@ export class AuthService {
       await this.userRepository.save(user);
 
       return {
-        ...user,
-        token: this.getJwtToken({ email: user.email }),
+        email: user.email,
+        name: user.name,
+        lastname: user.lastname,
+        token: this.getJwtToken({ id: user.id }),
       };
     } catch (error) {
       // this.logger.error(error);
@@ -50,7 +52,7 @@ export class AuthService {
 
     const user: User | null = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true },
+      select: { email: true, password: true, id: true },
     });
 
     if (!user)
@@ -60,8 +62,8 @@ export class AuthService {
       throw new UnauthorizedException(`Credentials are not valid (password)`);
 
     return {
-      ...user,
-      token: this.getJwtToken({ email: user.email }),
+      email: user.email,
+      token: this.getJwtToken({ id: user.id }),
     };
   }
 
