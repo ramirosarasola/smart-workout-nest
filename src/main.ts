@@ -38,6 +38,8 @@ async function bootstrap() {
     prefix: '/files', // Prefijo para acceder a los archivos
   });
 
+  app.enableCors();
+
   const config = new DocumentBuilder()
     .setTitle('Smart Workouts')
     .setDescription('The smart-workout API description')
