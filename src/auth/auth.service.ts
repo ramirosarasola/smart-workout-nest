@@ -67,6 +67,13 @@ export class AuthService {
     };
   }
 
+  validateToken(user: User) {
+    return {
+      email: user.email,
+      token: this.getJwtToken({ id: user.id }),
+    };
+  }
+
   private getJwtToken(payload: IJwtPayload) {
     return this.jwtService.sign(payload); // Return the token
   }

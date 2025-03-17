@@ -23,6 +23,12 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
+  @Get('check-status')
+  @Auth()
+  validateToken(@GetUser() user: User) {
+    return this.authService.validateToken(user);
+  }
+
   @Get('private')
   @UseGuards(AuthGuard())
   testingPrivateRoute(@GetUser('email') userEmail: string) {

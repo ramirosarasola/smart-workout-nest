@@ -29,7 +29,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         return {
           secret: jwtSecret,
           signOptions: {
-            expiresIn: '4h',
+            expiresIn: '1h',
           },
         };
       },
