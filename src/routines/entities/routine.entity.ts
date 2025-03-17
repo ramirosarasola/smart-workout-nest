@@ -10,6 +10,7 @@ import {
 import { RoutineExercise } from './routine-exercise.entity';
 import { RoutineImage } from './routine-image.entity';
 import { User } from 'src/auth/entities/user.entity';
+import { Workout } from 'src/workouts/entities/workout.entity';
 
 @Entity()
 export class Routine {
@@ -70,6 +71,10 @@ export class Routine {
   // Con el eager: true, se cargan los usuarios asociados a la rutina
   @ManyToOne(() => User, (user) => user.routines, { eager: true })
   user: User;
+
+  // Relacion con el workout
+  @OneToMany(() => Workout, (workout) => workout.routine)
+  workouts: Workout[];
 
   @BeforeInsert()
   validateSlugInsert() {

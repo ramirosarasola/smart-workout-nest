@@ -1,4 +1,5 @@
 import { Routine } from 'src/routines/entities';
+import { Workout } from 'src/workouts/entities/workout.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -38,6 +39,9 @@ export class User {
 
   @OneToMany(() => Routine, (routine) => routine.user)
   routines: Routine[];
+
+  @OneToMany(() => Workout, (workout) => workout.user)
+  workouts: Workout[];
 
   @BeforeInsert()
   checkFieldsBeforeInsert() {
