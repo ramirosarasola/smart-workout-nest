@@ -34,7 +34,7 @@ export class CreateExerciseDto {
 
   @IsNumber()
   @Min(0)
-  @Max(1)
+  @Max(10)
   readonly relativeLoad: number;
 
   @IsNumber()
