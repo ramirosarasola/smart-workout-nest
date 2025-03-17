@@ -3,6 +3,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { GetUser } from './decorators/get-user.decorator';
 import { CreateUserDto, LoginUserDto } from './dto';
+import { RoleProtected } from './decorators/role-protected.decorator';
+import { ValidRoles } from './interfaces';
+import { UserRoleGuard } from './guards/user-role.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -21,6 +24,17 @@ export class AuthController {
   @Get('private')
   @UseGuards(AuthGuard())
   testingPrivateRoute(@GetUser('email') userEmail: string) {
+    return {
+      ok: true,
+      message: 'Hola mundo Privado',
+      userEmail,
+    };
+  }
+
+  @Get('private2')
+  @RoleProtected(ValidRoles.admin, ValidRoles.superUser)
+  @UseGuards(AuthGuard(), UserRoleGuard)
+  testingPrivateRoute2(@GetUser('email') userEmail: string) {
     return {
       ok: true,
       message: 'Hola mundo Privado',
