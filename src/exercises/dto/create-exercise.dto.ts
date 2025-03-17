@@ -39,7 +39,7 @@ export class CreateExerciseDto {
 
   @IsNumber()
   @Min(1)
-  @Max(5)
+  @Max(10)
   readonly stabilityRequirement: number;
 
   @IsNumber()
