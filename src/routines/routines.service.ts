@@ -18,6 +18,7 @@ import {
   FindOneRoutineResponse,
 } from './interfaces/routine.interface';
 import { Exercise } from 'src/exercises/entities/exercise.entity';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class RoutinesService {
@@ -35,7 +36,7 @@ export class RoutinesService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(createRoutineDto: CreateRoutineDto) {
+  async create(createRoutineDto: CreateRoutineDto, user: User) {
     try {
       const {
         images = [],
@@ -67,6 +68,7 @@ export class RoutinesService {
       });
 
       // Guardamos la rutina en la base de datos
+      routine.user = user;
       const savedRoutine = await this.routineRepository.save(routine);
 
       // Creamos la relación entre la rutina y los ejercicios

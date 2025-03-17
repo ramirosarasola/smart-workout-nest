@@ -1,8 +1,10 @@
+import { Routine } from 'src/routines/entities';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -33,6 +35,9 @@ export class User {
     default: ['user'],
   })
   roles: string[];
+
+  @OneToMany(() => Routine, (routine) => routine.user)
+  routines: Routine[];
 
   @BeforeInsert()
   checkFieldsBeforeInsert() {

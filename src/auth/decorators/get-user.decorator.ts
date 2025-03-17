@@ -9,10 +9,8 @@ import { User } from '../entities/user.entity';
 export const GetUser = createParamDecorator(
   (data: string, ctx: ExecutionContext): User | string | undefined => {
     const req = ctx.switchToHttp().getRequest<{ user?: User }>();
-    console.log(data);
 
     const user: User | undefined = req?.user;
-
     if (!user)
       throw new InternalServerErrorException(`User not found (request).`);
 

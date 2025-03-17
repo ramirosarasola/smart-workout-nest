@@ -3,11 +3,13 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RoutineExercise } from './routine-exercise.entity';
 import { RoutineImage } from './routine-image.entity';
+import { User } from 'src/auth/entities/user.entity';
 
 @Entity()
 export class Routine {
@@ -64,6 +66,10 @@ export class Routine {
     eager: true,
   })
   images: RoutineImage[];
+
+  // Con el eager: true, se cargan los usuarios asociados a la rutina
+  @ManyToOne(() => User, (user) => user.routines, { eager: true })
+  user: User;
 
   @BeforeInsert()
   validateSlugInsert() {

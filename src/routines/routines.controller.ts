@@ -1,26 +1,30 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseUUIDPipe,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
-import { RoutinesService } from './routines.service';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { RoutinesService } from './routines.service';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { User } from 'src/auth/entities/user.entity';
 
 @Controller('routines')
 export class RoutinesController {
   constructor(private readonly routinesService: RoutinesService) {}
 
   @Post()
-  create(@Body() createRoutineDto: CreateRoutineDto) {
-    return this.routinesService.create(createRoutineDto);
+  @Auth()
+  create(@GetUser() user: User, @Body() createRoutineDto: CreateRoutineDto) {
+    return this.routinesService.create(createRoutineDto, user);
   }
 
   @Get()
