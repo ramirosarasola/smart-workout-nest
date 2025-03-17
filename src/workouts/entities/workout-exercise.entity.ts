@@ -1,7 +1,6 @@
 import { Entity, ManyToOne, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { Workout } from 'src/workouts/entities/workout.entity';
-import { Exercise } from 'src/exercises/entities/exercise.entity';
-
+import { RoutineExercise } from 'src/routines/entities/routine-exercise.entity';
 @Entity()
 export class WorkoutExercise {
   @PrimaryGeneratedColumn('uuid')
@@ -12,8 +11,8 @@ export class WorkoutExercise {
   })
   workout: Workout;
 
-  @ManyToOne(() => Exercise, { eager: true, onDelete: 'CASCADE' })
-  exercise: Exercise;
+  @ManyToOne(() => RoutineExercise, { eager: true, onDelete: 'CASCADE' })
+  routineExercise: RoutineExercise;
 
   @Column({ default: 0 })
   setsCompleted: number;

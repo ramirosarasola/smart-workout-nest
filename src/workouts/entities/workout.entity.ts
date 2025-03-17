@@ -1,12 +1,10 @@
 import { User } from 'src/auth/entities/user.entity';
-import { Routine } from 'src/routines/entities/routine.entity';
 import {
+  Column,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  Column,
 } from 'typeorm';
 import { WorkoutExercise } from './workout-exercise.entity';
 
@@ -17,10 +15,6 @@ export class Workout {
 
   @ManyToOne(() => User, (user) => user.workouts, { eager: true })
   user: User;
-
-  @ManyToOne(() => Routine, (routine) => routine.workouts, { eager: true })
-  @JoinColumn()
-  routine: Routine;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: Date;
