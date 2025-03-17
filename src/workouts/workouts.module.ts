@@ -7,12 +7,19 @@ import { User } from 'src/auth/entities/user.entity';
 import { Workout } from './entities/workout.entity';
 import { WorkoutExercise } from './entities/workout-exercise.entity';
 import { AuthModule } from 'src/auth/auth.module';
+import { RoutineExercise } from 'src/routines/entities/routine-exercise.entity';
 
 @Module({
   controllers: [WorkoutsController],
   providers: [WorkoutsService],
   imports: [
-    TypeOrmModule.forFeature([Routine, User, Workout, WorkoutExercise]),
+    TypeOrmModule.forFeature([
+      Routine,
+      User,
+      Workout,
+      WorkoutExercise,
+      RoutineExercise,
+    ]),
     AuthModule,
   ],
 })

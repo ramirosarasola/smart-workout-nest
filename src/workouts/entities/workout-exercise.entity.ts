@@ -9,9 +9,9 @@ export class WorkoutExercise {
   @ManyToOne(() => Workout, (workout) => workout.workoutExercises, {
     onDelete: 'CASCADE',
   })
-  workout: Workout;
+  workout: string;
 
-  @ManyToOne(() => RoutineExercise, { eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => RoutineExercise, { onDelete: 'CASCADE' })
   routineExercise: RoutineExercise;
 
   @Column({ default: 0 })
@@ -20,6 +20,9 @@ export class WorkoutExercise {
   @Column({ default: 0 })
   repsCompleted: number;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
+  @Column({ type: 'float', default: 0 })
   weightUsed: number;
+
+  @Column({ default: 0 })
+  restTime: number;
 }
